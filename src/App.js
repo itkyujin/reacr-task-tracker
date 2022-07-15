@@ -19,7 +19,6 @@ const App = () => {
     getTasks()
   }, [])
 
-
   // Fetch Tasks
   const fetchTasks = async () => {
     const res = await fetch('http://localhost:5000/tasks')
@@ -27,10 +26,10 @@ const App = () => {
 
     return data
   }
-  
+
   // Fetch Task
   const fetchTask = async (id) => {
-    const res = await fetch('http://localhost:5000/tasks/${id}')
+    const res = await fetch(`http://localhost:5000/tasks/${id}`)
     const data = await res.json()
 
     return data
@@ -40,7 +39,7 @@ const App = () => {
   const addTask = async (task) => {
     const res = await fetch('http://localhost:5000/tasks', {
       method: 'POST',
-      header: {
+      headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(task),
@@ -50,21 +49,20 @@ const App = () => {
 
     setTasks([...tasks, data])
 
-    // const id = Math.floor(Math.random() * 10000) +1
+    // const id = Math.floor(Math.random() * 10000) + 1
     // const newTask = { id, ...task }
-    // setTasks([...Tasks, newTask])
-  } 
-
+    // setTasks([...tasks, newTask])
+  }
 
   // Delete Task
   const deleteTask = async (id) => {
-    const res = await fetch('http://localhost:5000/tasks/${id}', {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
       method: 'DELETE',
     })
-    // We should control the response status to decide if we will change the state or not.
+    //We should control the response status to decide if we will change the state or not.
     res.status === 200
-    ? setTasks(tasks.filter((task) => task.id !== id))
-    : alert('Error Deleting This Task')
+      ? setTasks(tasks.filter((task) => task.id !== id))
+      : alert('Error Deleting This Task')
   }
 
   // Toggle Reminder
@@ -72,7 +70,7 @@ const App = () => {
     const taskToToggle = await fetchTask(id)
     const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
 
-    const res = await fetch('http://localhost:5000/tasks/${id}', {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -97,26 +95,26 @@ const App = () => {
           showAdd={showAddTask}
         />
         <Routes>
-          <Routes
+          <Route
             path='/'
             element={
               <>
                 {showAddTask && <AddTask onAdd={addTask} />}
-                {tasks.lengh > 0 ? (
+                {tasks.length > 0 ? (
                   <Tasks
                     tasks={tasks}
                     onDelete={deleteTask}
                     onToggle={toggleReminder}
-                  />  
+                  />
                 ) : (
                   'No Tasks To Show'
                 )}
               </>
             }
           />
-        <Routes path='/about' element={<About />} />
-      </Routes>
-      <Footer />
+          <Route path='/about' element={<About />} />
+        </Routes>
+        <Footer />
       </div>
     </Router>
   )
